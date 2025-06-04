@@ -1,0 +1,74 @@
+# Task 0: Collect User Query
+CollectUserQuery:
+  description: >
+    Collect the user's specific insurance policy question or concern.
+    This input will guide the subsequent analysis tasks.
+  expected_output: >
+    The user's specific question or concern about their car insurance policy,
+    which will be used as context for the analysis tasks.
+  agent: car_insurance_specialist
+  human_input: true
+
+# Task 1: Analyze Policy Coverage
+AnalyzePolicyCoverage:
+  description: >
+    Analyze the client's car insurance policy to answer specific questions about coverage. 
+    Carefully review the policy documents to identify all relevant clauses, limitations, 
+    and conditions that apply to the client's query. Consider the type of coverage 
+    (liability, collision, comprehensive, etc.) and any applicable deductibles or limits.
+  expected_output: >
+    A structured response in markdown format with the following sections:
+    
+    ## Coverage Analysis
+    - [Clear yes/no/maybe answer to the coverage question]
+    - [Explanation of why this coverage applies or doesn't apply]
+    
+    ## Relevant Policy Sections
+    - [Direct quotes or paraphrases from the policy]
+    - [Section numbers or references]
+    
+    ## Important Considerations
+    - [Any limitations, exceptions, or special conditions]
+    - [Potential impacts on premiums or coverage]
+    
+    If the information is not found in the policy, explicitly state: 
+    "This information is not specified in your policy documents. Please contact your insurance 
+    provider for clarification."
+  agent: car_insurance_specialist
+  context: [CollectUserQuery]
+
+
+# Task 2: Compare Coverage Options
+CompareCoverageOptions:
+  description: >
+    Compare different coverage options or scenarios based on the policy documents.
+    For example, compare the implications of choosing different deductible amounts or 
+    adding/removing specific coverages.
+  expected_output: >
+    A comparison table showing different coverage options, including:
+    - Coverage type/option
+    - What's included
+    - What's excluded
+    - Impact on premium
+    - Recommended scenarios for choosing this option
+  agent: car_insurance_specialist
+  context: [AnalyzePolicyCoverage]
+
+
+
+# Task 3: Explain Claims Process
+ExplainClaimsProcess:
+  description: >
+    Explain the step-by-step process for filing a car insurance claim based on the policy documents.
+    Include any required documentation, time limits, and important contacts.
+  expected_output: >
+    A numbered list of steps to file a claim, including:
+    1. Immediate actions after an incident
+    2. Required documentation
+    3. How to submit the claim
+    4. Expected timeline
+    5. Contact information for claims department
+  agent: car_insurance_specialist
+  context: [CompareCoverageOptions]
+
+

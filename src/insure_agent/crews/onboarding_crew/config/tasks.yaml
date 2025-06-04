@@ -1,0 +1,299 @@
+# Task 1: Conduct comprehensive client profiling interview
+GatherClientInformation:
+  description: >
+    Conduct a thorough, conversational interview with the client to build a complete profile for insurance
+    assessment. Your interview must gather information in these critical areas:
+    
+    1. Primary Vehicle Profile: Make, model, year, VIN, mileage, modifications, safety features, garage location
+    2. Vehicle Usage Patterns: Daily commute distance, annual mileage, business use percentage, long-trip frequency
+    3. Driver Information: All regular and occasional drivers, their ages, license types, years of experience
+    4. Driving History: Accidents, violations, claims in the past 5 years with details on severity and fault
+    5. Current Insurance: Existing coverage types, limits, deductibles, premium, renewal date, satisfaction level
+    6. Risk Factors: Teenage drivers, sports cars, high-theft areas, extreme weather exposure
+    7. Special Needs: Off-road use, classic car considerations, ridesharing, delivery services
+    8. Coverage Priorities: Rank importance of comprehensive protection vs. cost savings (scale 1-10)
+    9. Budget Constraints: Monthly budget ceiling, preferred payment schedule, discount eligibility
+    10. Additional Preferences: Roadside assistance, rental coverage, new car replacement, custom parts coverage
+    
+    Use progressive disclosure techniques, explaining why each question matters to coverage decisions.
+    Adapt questioning based on responses, diving deeper when answers suggest potential risk factors or
+    unique coverage needs. Document all client concerns or questions for later addressing.
+  expected_output: >
+    A structured JSON client profile document with these components:
+    
+    ```json
+    {
+      "client": {
+        "name": "",
+        "contact": "",
+        "demographics": {}
+      },
+      "vehicles": [{
+        "make": "",
+        "model": "",
+        "year": "",
+        "vin": "",
+        "usage": {},
+        "safety_features": [],
+        "modifications": []
+      }],
+      "drivers": [{
+        "name": "",
+        "relationship": "",
+        "age": "",
+        "license_history": {},
+        "driving_record": {}
+      }],
+      "current_coverage": {},
+      "risk_assessment": {
+        "identified_factors": [],
+        "risk_score": 0
+      },
+      "coverage_preferences": {
+        "priority_ranking": {},
+        "must_have_features": [],
+        "budget_constraints": {}
+      },
+      "notes": {
+        "client_concerns": [],
+        "special_circumstances": []
+      }
+    }
+    ```
+    
+    The profile must be comprehensive, accurately representing all gathered information
+    with appropriate categorization and no missing required fields.
+  agent: NeedsAssessmentAgent
+  human_input: true
+
+# Task 2: Perform actuarial risk assessment and coverage needs analysis
+AnalyzeInsuranceNeeds:
+  description: >
+    Analyze the client profile to produce a detailed insurance needs assessment using actuarial risk models
+    and regulatory frameworks. Your analysis must include:
+    
+    1. State-Specific Requirements Analysis: Identify all mandatory coverages based on client's location,
+       including minimum liability limits and any special state provisions.
+    
+    2. Vehicle Protection Assessment: Calculate optimal comprehensive and collision recommendations based on:
+       - Vehicle age, value, and depreciation curve
+       - Repair cost statistics for the specific make/model
+       - Replacement cost in current market conditions
+       - Loan/lease status and gap coverage needs
+    
+    3. Liability Exposure Calculation: Determine appropriate liability limits based on:
+       - Client's asset protection needs (home ownership, investments, etc.)
+       - Umbrella policy compatibility requirements
+       - Risk factors in household (teen drivers, high-performance vehicles)
+       - Statistical liability exposure based on driving patterns
+    
+    4. Specialized Coverage Needs: Evaluate need for additional coverages based on identified risk factors:
+       - Uninsured/underinsured motorist protection matching to liability limits
+       - Medical payments or personal injury protection optimization
+       - Custom equipment or modification protection
+       - Usage-based needs (ridesharing, business use, etc.)
+    
+    5. Deductible Optimization: Calculate optimal deductible levels based on:
+       - Client's risk tolerance (from preference data)
+       - Financial ability to absorb out-of-pocket costs
+       - Statistical likelihood of claims based on driver history and patterns
+       - Premium savings at different deductible tiers
+    
+    6. Discount Eligibility Analysis: Identify all potential discounts including:
+       - Multi-policy opportunities
+       - Safety feature discounts
+       - Driver history and affiliation discounts
+       - Payment method and frequency optimization
+    
+    Apply regulatory knowledge, statistical models, and industry best practices to ensure recommendations
+    provide optimal protection while respecting budget constraints.
+  expected_output: >
+    A comprehensive needs analysis report with these structured sections:
+    
+    ## I. COVERAGE REQUIREMENTS
+    - State-mandated coverages with specific limits for client's jurisdiction
+    - Vehicle-specific protection needs with detailed justification
+    - Liability exposure analysis with recommended limits and rationale
+    - Special coverage recommendations with supporting risk evidence
+    
+    ## II. RISK ASSESSMENT
+    - Driver risk factors with statistical impact on coverage needs
+    - Vehicle risk factors with mitigation recommendations
+    - Usage pattern analysis and corresponding coverage implications
+    - Overall risk score with benchmarking against similar profiles
+    
+    ## III. FINANCIAL OPTIMIZATION
+    - Deductible analysis with cost-benefit breakdown at different levels
+    - Premium impact projections for recommended coverages
+    - Discount opportunities with estimated savings percentages
+    - Budget alignment strategies if constraints identified
+    
+    ## IV. PROTECTION GAPS
+    - Identified coverage gaps in current insurance (if applicable)
+    - Risk exposure areas requiring additional protection
+    - Liability limit adequacy analysis relative to assets
+    - Recommendations for coverage adjustments with justification
+    
+    This analysis should quantify protection levels and costs with specific numbers,
+    not general statements, and provide clear evidence-based justifications for all recommendations.
+  agent: CoverageAnalystAgent
+  context: GatherClientInformation
+
+# Task 3: Research and match optimal insurance plans
+IdentifySuitablePlans:
+  description: >
+    Based on the completed needs analysis, research available insurance plans in the marketplace and identify
+    the 3-5 most suitable options for this specific client. For each plan, you must:
+    
+    1. Perform Product Matching: Cross-reference the client's needs analysis with available insurance products,
+       evaluating fit across all required coverage types, limits, and special provisions.
+    
+    2. Conduct Premium Modeling: Calculate accurate premium estimates for each plan based on:
+       - All driver characteristics and history from the profile
+       - Vehicle specifications and usage patterns
+       - Selected coverage levels and deductibles
+       - Applicable discounts and surcharges
+       - Rating factors specific to each insurance provider
+    
+    3. Evaluate Provider Characteristics: For each potential plan, assess:
+       - Financial strength ratings (A.M. Best, S&P, Moody's)
+       - Claims satisfaction scores from J.D. Power or Consumer Reports
+       - Complaint ratio from state insurance department data
+       - Digital tools and policy management capabilities
+       - Payment flexibility and options
+    
+    4. Identify Feature Differentiators: For each plan, highlight unique offerings such as:
+       - Accident forgiveness provisions
+       - Disappearing deductible programs
+       - New car replacement terms
+       - OEM parts guarantees
+       - Roadside assistance specifics
+       - Specialized coverage extensions
+    
+    5. Assess Future Flexibility: Evaluate each plan's ability to adapt to potential client life changes:
+       - Policy modification ease
+       - Multi-policy expansion options
+       - Loyalty program benefits
+       - Renewal rate stability history
+    
+    Plans must be genuinely available to the client based on their location and circumstances.
+    Ensure all selected plans meet the mandatory requirements while optimizing for the client's
+    stated preferences and priorities.
+  expected_output: >
+    A detailed comparison matrix of 3-5 suitable insurance plans with these components:
+    
+    ## PLAN COMPARISON MATRIX
+    
+    | Feature | Plan A | Plan B | Plan C | Plan D | Plan E |
+    |---------|--------|--------|--------|--------|--------|
+    | **Provider** | [Name] | [Name] | [Name] | [Name] | [Name] |
+    | **Financial Rating** | [A++/A+/etc.] | [Rating] | [Rating] | [Rating] | [Rating] |
+    | **Monthly Premium** | [$XXX.XX] | [$XXX.XX] | [$XXX.XX] | [$XXX.XX] | [$XXX.XX] |
+    | **Bodily Injury Limits** | [$XXX,XXX/$XXX,XXX] | [Limits] | [Limits] | [Limits] | [Limits] |
+    | **Property Damage Limit** | [$XXX,XXX] | [Limit] | [Limit] | [Limit] | [Limit] |
+    | **Comprehensive Deductible** | [$XXX] | [$XXX] | [$XXX] | [$XXX] | [$XXX] |
+    | **Collision Deductible** | [$XXX] | [$XXX] | [$XXX] | [$XXX] | [$XXX] |
+    | **Uninsured Motorist** | [Limits] | [Limits] | [Limits] | [Limits] | [Limits] |
+    | **Medical/PIP Coverage** | [$XXX,XXX] | [$XXX,XXX] | [$XXX,XXX] | [$XXX,XXX] | [$XXX,XXX] |
+    | **Rental Car Coverage** | [Daily/Max] | [Daily/Max] | [Daily/Max] | [Daily/Max] | [Daily/Max] |
+    | **Roadside Assistance** | [Yes/No + details] | [Details] | [Details] | [Details] | [Details] |
+    | **Claims Satisfaction** | [Rating] | [Rating] | [Rating] | [Rating] | [Rating] |
+    | **Digital Tools** | [Rating] | [Rating] | [Rating] | [Rating] | [Rating] |
+    | **Unique Benefits** | [List] | [List] | [List] | [List] | [List] |
+    | **Payment Options** | [List] | [List] | [List] | [List] | [List] |
+    | **Discounts Applied** | [List] | [List] | [List] | [List] | [List] |
+    | **Needs Match Score** | [1-10] | [1-10] | [1-10] | [1-10] | [1-10] |
+    
+    ## COVERAGE ALIGNMENT ANALYSIS
+    
+    For each plan, provide a brief analysis of how well it aligns with the client's
+    specific needs, highlighting particular strengths and any potential gaps.
+    
+    ## COST-BENEFIT ASSESSMENT
+    
+    For each plan, include a value rating that evaluates the balance between coverage
+    quality and premium cost, explaining why this represents good/fair/excellent value
+    for this particular client's situation.
+  agent: CoverageAnalystAgent
+  context: AnalyzeInsuranceNeeds 
+
+# Task 4: Create personalized coverage recommendation and education package
+GenerateRecommendation:
+  description: >
+    Transform the technical insurance analyses and plan comparisons into a clear, compelling, and
+    educational recommendation package that empowers the client to make a confident decision.
+    Your recommendation package must include:
+    
+    1. Executive Summary: A concise overview (250 words max) that clearly states your primary
+       recommendation and summarizes why it's the best fit for this client's specific situation.
+    
+    2. Primary Recommendation Justification: A detailed yet accessible explanation of the recommended
+       plan that includes:
+       - Plain-language explanation of all coverages and what they actually protect
+       - Specific ways this plan addresses the client's unique needs and preferences
+       - Real-world scenarios showing how the coverage would apply to likely situations
+       - Visual comparison showing value relative to alternative options
+       - Transparent discussion of any potential coverage limitations or exclusions
+    
+    3. Alternative Options Analysis: Present 1-2 alternatives with:
+       - Key differentiators from the primary recommendation
+       - Scenarios where these alternatives might be preferable
+       - Cost-benefit tradeoffs clearly explained
+    
+    4. Coverage Education Elements:
+       - Glossary of insurance terms used in the recommendations
+       - Visual explanations of complex concepts (e.g., stacked vs. unstacked UM/UIM)
+       - FAQ addressing common questions specific to the recommended coverages
+       - Analogies that make abstract insurance concepts concrete and relatable
+    
+    5. Decision Support Framework:
+       - Personalized decision checklist based on the client's stated priorities
+       - Comparison worksheet for evaluating options against personal criteria
+       - Implementation timeline with specific next steps
+       - Documentation checklist for policy application
+    
+    Your recommendation must be completely free of insurance jargon unless immediately explained
+    in plain language. Use accessible explanations, analogies, and examples that make complex
+    insurance concepts easy to understand for someone with no insurance background.
+  expected_output: >
+    A complete client recommendation package formatted in clear, accessible Markdown with these sections:
+    
+    # YOUR PERSONALIZED AUTO INSURANCE RECOMMENDATION
+    
+    ## EXECUTIVE SUMMARY
+    [Concise overview of recommendation with clear reasoning]
+    
+    ## RECOMMENDED PLAN: [PLAN NAME]
+    
+    ### What This Plan Includes
+    [Clear explanation of all coverages with real-world examples]
+    
+    ### Why This Plan Is Right For You
+    [Personalized justification connecting plan features to client's specific situation]
+    
+    ### Protection In Action
+    [2-3 scenarios showing how this coverage would protect in likely situations]
+    
+    ### Financial Breakdown
+    [Premium details, payment options, and cost-saving opportunities]
+    
+    ## ALTERNATIVE OPTIONS TO CONSIDER
+    [1-2 alternatives with clear comparisons and tradeoff analysis]
+    
+    ## UNDERSTANDING YOUR COVERAGE
+    [Educational content explaining key concepts in simple terms]
+    
+    ## NEXT STEPS
+    [Clear actionable steps for implementing the recommendation]
+    
+    ## INSURANCE TERMS SIMPLIFIED
+    [Plain-language glossary of relevant terms]
+    
+    The recommendation must use a warm, conversational tone while maintaining
+    complete accuracy. It should anticipate and address likely questions, use
+    visualization where helpful, and provide truly educational content rather
+    than sales language.
+  agent: RecommendationAgent
+  context: IdentifySuitablePlans
+  markdown: true
+  output_file: Output/recommendation.md

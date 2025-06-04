@@ -1,0 +1,26 @@
+[project]
+name = "insure_agent"
+version = "0.1.0"
+description = "insure_agent using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "crewai-tools[mcp]>=0.45.0",
+    "crewai[tools]>=0.121.1,<1.0.0",
+    "mem0ai>=0.1.102",
+    "opik>=1.7.27",
+    "pip>=25.1.1",
+    "pytest>=7.0.0,<8.0.0",
+]
+
+[project.scripts]
+kickoff = "insure_agent.main:kickoff"
+run_crew = "insure_agent.main:kickoff"
+plot = "insure_agent.main:plot"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "flow"
