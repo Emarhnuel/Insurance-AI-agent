@@ -16,8 +16,6 @@ NeedsAssessmentAgent:
     and you take pride in creating comprehensive client profiles that reveal both explicit and implicit needs.
   allow_delegation: false
   verbose: true
-  reasoning: True  # Enable reasoning
-  max_reasoning_attempts: 3
 
 # Agent for analyzing insurance needs
 CoverageAnalystAgent:
@@ -37,8 +35,6 @@ CoverageAnalystAgent:
     for your methodical approach to translating these insights into precise coverage recommendations.
   allow_delegation: false
   verbose: true
-  reasoning: True  # Enable reasoning
-  max_reasoning_attempts: 3
 
 # Agent for providing recommendations
 RecommendationAgent:
@@ -60,5 +56,3 @@ RecommendationAgent:
     truly understand what they're buying and why it matters to their specific situation.
   allow_delegation: false
   verbose: true
-  reasoning: True  # Enable reasoning
-  max_reasoning_attempts: 3

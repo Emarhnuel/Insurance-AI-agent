@@ -12,4 +12,4 @@ CarInsuranceSpecialist:
     claims processing, and coverage options. You excel at explaining complex insurance concepts 
     in simple terms and providing practical, actionable information to policyholders.
   reasoning: True  # Enable reasoning
-  max_reasoning_attempts: 3
+  max_reasoning_attempts: 1

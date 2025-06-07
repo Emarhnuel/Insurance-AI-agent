@@ -48,12 +48,20 @@ class OnboardingCrew:
     llm_1 = LLM(
     model="openrouter/deepseek/deepseek-r1-0528",
     base_url="https://openrouter.ai/api/v1",
+    max_tokens=10000,
+    temperature=0.2,
+    stream=True,
+    seed=42,
     api_key=os.getenv("OPENROUTER_API_KEY")
 )
 
     llm_2 = LLM(
     model="openrouter/deepseek/deepseek-r1-0528",
     base_url="https://openrouter.ai/api/v1",
+    max_tokens=10000,
+    temperature=0.2,
+    stream=True,
+    seed=42,
     api_key=os.getenv("OPENROUTER_API_KEY")
 )
 
@@ -63,6 +71,8 @@ class OnboardingCrew:
         return Agent(
             config=self.agents_config["NeedsAssessmentAgent"],
             llm=self.llm_1,
+            max_rpm=40,
+            max_iter=3,
             verbose=True
         )
 
@@ -75,6 +85,8 @@ class OnboardingCrew:
             config=self.agents_config["CoverageAnalystAgent"],
             tools=[policy_search_tool, premium_calculator_tool, insurance_plan_database_tool], # Added insurance_plan_database_tool
             llm=self.llm_2,
+            max_rpm=40,
+            max_iter=3,
             verbose=True
         )
 
@@ -84,6 +96,8 @@ class OnboardingCrew:
         return Agent(
             config=self.agents_config["RecommendationAgent"],
             llm=self.llm_2,
+            max_rpm=40,
+            max_iter=3,
             verbose=True
         )
 
@@ -92,7 +106,6 @@ class OnboardingCrew:
         """Conducts a comprehensive client profiling interview"""
         return Task(
             config=self.tasks_config["GatherClientInformation"],
-            output_pydantic=ClientProfile
         )
 
     @task
@@ -114,7 +127,6 @@ class OnboardingCrew:
         """Creates personalized coverage recommendation and education package"""
         return Task(
             config=self.tasks_config["GenerateRecommendation"],
-            output_pydantic=InsuranceRecommendation,
         )
 
     @crew

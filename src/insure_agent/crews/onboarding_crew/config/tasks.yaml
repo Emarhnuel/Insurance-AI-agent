@@ -1,70 +1,29 @@
 # Task 1: Conduct comprehensive client profiling interview
 GatherClientInformation:
   description: >
-    Conduct a thorough, conversational interview with the client to build a complete profile for insurance
-    assessment. Your interview must gather information in these critical areas:
+    Engage in an interactive, conversational interview with the client, {client_name}, about their request for a(n) {initial_request_type}.
+    Your primary objective is to ask questions to gather all necessary information to populate a comprehensive client profile (as defined by the ClientProfile structure).
+
+    IMPORTANT: You MUST ask the user for each piece of information required for the client profile.
+    Do NOT invent, assume, or pre-fill any data. Your role is to ask questions and record the user's answers.
     
-    1. Primary Vehicle Profile: Make, model, year, VIN, mileage, modifications, safety features, garage location
-    2. Vehicle Usage Patterns: Daily commute distance, annual mileage, business use percentage, long-trip frequency
-    3. Driver Information: All regular and occasional drivers, their ages, license types, years of experience
-    4. Driving History: Accidents, violations, claims in the past 5 years with details on severity and fault
-    5. Current Insurance: Existing coverage types, limits, deductibles, premium, renewal date, satisfaction level
-    6. Risk Factors: Teenage drivers, sports cars, high-theft areas, extreme weather exposure
-    7. Special Needs: Off-road use, classic car considerations, ridesharing, delivery services
-    8. Coverage Priorities: Rank importance of comprehensive protection vs. cost savings (scale 1-10)
-    9. Budget Constraints: Monthly budget ceiling, preferred payment schedule, discount eligibility
-    10. Additional Preferences: Roadside assistance, rental coverage, new car replacement, custom parts coverage
-    
-    Use progressive disclosure techniques, explaining why each question matters to coverage decisions.
-    Adapt questioning based on responses, diving deeper when answers suggest potential risk factors or
-    unique coverage needs. Document all client concerns or questions for later addressing.
+    Guide the user through the following general areas, asking specific questions for each:
+    1. Client & Vehicle Basics - (e.g., Your name, contact, vehicle make, model, year, VIN)
+    2. Driver Details & History - (e.g., Who will be driving, license details, any accidents or violations for all drivers)
+    3. Vehicle Use & Special Considerations - (e.g., How the vehicle is used daily, for business, any special equipment or needs like towing)
+    4. Current Insurance & Key Risk Factors - (e.g., Details of your current policy if any, any specific risk factors like new drivers or location)
+    5. Coverage Needs, Priorities & Budget - (e.g., What coverages are most important, any budget constraints, specific preferences or concerns)
+ 
+    Explain why information is needed as you go. If the user's response is unclear or incomplete for a required field, ask clarifying questions.
+    The final output will be a JSON structure based on the user's direct input.
   expected_output: >
-    A structured JSON client profile document with these components:
-    
-    ```json
-    {
-      "client": {
-        "name": "",
-        "contact": "",
-        "demographics": {}
-      },
-      "vehicles": [{
-        "make": "",
-        "model": "",
-        "year": "",
-        "vin": "",
-        "usage": {},
-        "safety_features": [],
-        "modifications": []
-      }],
-      "drivers": [{
-        "name": "",
-        "relationship": "",
-        "age": "",
-        "license_history": {},
-        "driving_record": {}
-      }],
-      "current_coverage": {},
-      "risk_assessment": {
-        "identified_factors": [],
-        "risk_score": 0
-      },
-      "coverage_preferences": {
-        "priority_ranking": {},
-        "must_have_features": [],
-        "budget_constraints": {}
-      },
-      "notes": {
-        "client_concerns": [],
-        "special_circumstances": []
-      }
-    }
-    ```
-    
-    The profile must be comprehensive, accurately representing all gathered information
-    with appropriate categorization and no missing required fields.
-  agent: NeedsAssessmentAgent
+    A structured JSON client profile, conforming to the ClientProfile Pydantic model,
+    containing only information directly provided by the user {client_name} during the interactive interview.
+    All fields in the profile must be populated based on the user's explicit answers.
+    No data should be assumed or auto-generated.
+  agent: needs_assessment_agent
   human_input: true
+
 
 # Task 2: Perform actuarial risk assessment and coverage needs analysis
 AnalyzeInsuranceNeeds:
@@ -136,8 +95,9 @@ AnalyzeInsuranceNeeds:
     
     This analysis should quantify protection levels and costs with specific numbers,
     not general statements, and provide clear evidence-based justifications for all recommendations.
-  agent: CoverageAnalystAgent
-  context: GatherClientInformation
+  agent: coverage_analyst_agent
+  context: 
+    - gather_client_information
 
 # Task 3: Research and match optimal insurance plans
 IdentifySuitablePlans:
@@ -214,8 +174,9 @@ IdentifySuitablePlans:
     For each plan, include a value rating that evaluates the balance between coverage
     quality and premium cost, explaining why this represents good/fair/excellent value
     for this particular client's situation.
-  agent: CoverageAnalystAgent
-  context: AnalyzeInsuranceNeeds 
+  agent: coverage_analyst_agent
+  context: 
+    - analyze_insurance_needs 
 
 # Task 4: Create personalized coverage recommendation and education package
 GenerateRecommendation:
@@ -293,7 +254,10 @@ GenerateRecommendation:
     complete accuracy. It should anticipate and address likely questions, use
     visualization where helpful, and provide truly educational content rather
     than sales language.
-  agent: RecommendationAgent
-  context: IdentifySuitablePlans
+  agent: recommendation_agent
+  context: 
+    - identify_suitable_plans
+    - analyze_insurance_needs
   markdown: true
-  output_file: Output/recommendation.md
+  output_file: Output/recommendation.md 
+

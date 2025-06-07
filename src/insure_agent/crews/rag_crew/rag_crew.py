@@ -40,12 +40,10 @@ class RagCrew:
     llm_1 = LLM(
     model="openrouter/deepseek/deepseek-r1-0528",
     base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPENROUTER_API_KEY")
-)
-
-    llm_2 = LLM(
-    model="openrouter/deepseek/deepseek-r1-0528",
-    base_url="https://openrouter.ai/api/v1",
+    max_tokens=10000,
+    temperature=0.2,
+    stream=True,
+    seed=42,
     api_key=os.getenv("OPENROUTER_API_KEY")
 )
 
@@ -57,35 +55,37 @@ class RagCrew:
             config=self.agents_config["CarInsuranceSpecialist"],
             tools=[policy_search_tool],
             llm=self.llm_1,
-            verbose=True
-        )
-    
-    @task
-    def analyze_policy_coverage(self) -> Task:
-        """Task for analyzing specific aspects of policy coverage"""
-        return Task(
-            config=self.tasks_config["AnalyzePolicyCoverage"],
-        )
-    
-    @task
-    def explain_claims_process(self) -> Task:
-        """Task for explaining the claims process to clients"""
-        return Task(
-            config=self.tasks_config["ExplainClaimsProcess"],
-        )
-    
-    @task
-    def compare_coverage_options(self) -> Task:
-        """Task for comparing different coverage options"""
-        return Task(
-            config=self.tasks_config["CompareCoverageOptions"],
+            verbose=True,
+            max_rpm=19,
+            max_iter=3,
         )
     
     @task
     def collect_user_query(self) -> Task:
         """Task for collecting user query"""
         return Task(
-            config=self.tasks_config["CollectUserQuery"],
+            config=self.tasks_config["collect_user_query"],
+        )
+
+    @task
+    def analyze_policy_coverage(self) -> Task:
+        """Task for analyzing specific aspects of policy coverage"""
+        return Task(
+            config=self.tasks_config["analyze_policy_coverage"],
+        )
+    
+    @task
+    def compare_coverage_options(self) -> Task:
+        """Task for comparing different coverage options"""
+        return Task(
+            config=self.tasks_config["compare_coverage_options"],
+        )
+
+    @task
+    def explain_claims_process(self) -> Task:
+        """Task for explaining the claims process to clients"""
+        return Task(
+            config=self.tasks_config["explain_claims_process"],
         )
     
     @crew
