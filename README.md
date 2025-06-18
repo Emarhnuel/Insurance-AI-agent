@@ -1,56 +1,163 @@
-# {{crew_name}} Crew
+# Insurance AI Agent API
 
-Welcome to the {{crew_name}} Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+Welcome to the Insurance AI Agent project, powered by [crewAI](https://crewai.com) and served via [FastAPI](https://fastapi.tiangolo.com/). This application provides a robust API for interacting with a multi-agent AI system designed for the insurance industry.
 
-## Installation
+It features two primary crews:
+- **Onboarding Crew**: Handles new client insurance quotes and initial inquiries.
+- **RAG Crew**: Answers specific policy questions by retrieving information from a knowledge base.
 
-Ensure you have Python >=3.10 <3.13 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+## Initial Project Scaffolding with `crewAI` CLI (For Reference)
 
-First, if you haven't already, install uv:
+These steps outline how the initial `crewAI` project structure can be created. The subsequent sections detail how to set up and run the project in its current FastAPI-based form.
 
-```bash
-pip install uv
+1.  **Create Project Folder:**
+    Create a new directory for your project and navigate into it:
+    ```bash
+    mkdir "Insure AI Agent"
+    cd "Insure AI Agent"
+    ```
+
+2.  **Scaffold `crewAI` Flow:**
+    Use the `crewAI` CLI to create the initial flow structure. This will create a subdirectory named `insure_agent` (or your chosen flow name).
+    ```bash
+    crewai create flow insure_agent
+    ```
+    *Navigate into the newly created `insure_agent` directory for the following steps if you ran the above command from the parent "Insure AI Agent" directory.*
+
+3.  **Initialize Virtual Environment with `uv`:**
+    It's recommended to use a virtual environment. `uv` can create and manage this.
+    ```bash
+    uv venv --python 3.12 
+    # Or your preferred Python 3.10+ version
+    ```
+
+4.  **Activate Virtual Environment:**
+    ```bash
+    # For Windows:
+    .venv\Scripts\activate
+
+    # For macOS/Linux:
+    source .venv/bin/activate
+    ```
+
+5.  **Install `crewAI` (if not already available globally/as a uv tool):
+    If you used `crewai create flow` successfully, `crewai` and its dependencies might already be in your environment if you followed `crewai install` from its template. If starting truly fresh or ensuring `crewai` is installed in the venv:
+    ```bash
+    uv tool install crewai
+    ```
+
+6.  **Add Other Dependencies:**
+    Install any additional packages required for your project (like `fastapi`, `uvicorn`, `python-dotenv`, `elasticsearch`, etc.) using `uv`.
+    ```bash
+    uv pip install fastapi uvicorn python-dotenv "elasticsearch[async]" pydantic sse-starlette
+    # Add other packages as needed, e.g., specific langchain components or tools.
+    ```
+
+## Setting Up This Project (After Cloning)
+
+If you have cloned this repository (which already includes the FastAPI integration and `crewAI` structure):
+
+1.  **Ensure Python Version:** Make sure you have Python 3.10 - 3.12 installed.
+
+2.  **Navigate to Project Root:** Open your terminal in the root directory of this cloned project (i.e., the `insure_agent` folder).
+
+3.  **Create and Activate Virtual Environment:**
+    Refer to steps 3 and 4 in the "Initial Project Scaffolding" section above for guidance on creating a virtual environment (e.g., using `uv venv` or `python -m venv .venv`) and activating it.
+
+4.  **Install Dependencies:**
+    With your virtual environment activated, install all project dependencies from the `requirements.txt` file:
+    ```bash
+pip install -r requirements.txt
+    # Or, if using uv:
+    # uv pip install -r requirements.txt
+    ```
+    This command installs FastAPI, Uvicorn, CrewAI, and all other necessary packages.
+
+5.  **Configure Environment:**
+    Proceed to the "Environment Configuration" section below to set up your API keys and other necessary variables.
+
+### 3. Environment Configuration
+
+This project requires several environment variables for API keys and service configuration. Create a `.env` file in the project root directory (`insure_agent/.env`) and add the following variables. Wrap all values in double quotes (`""`) to prevent parsing issues.
+
+```env
+OPENROUTER_API_KEY="your_openrouter_api_key"
+MEM0_API_KEY="your_mem0_api_key"
+OPIK_API_KEY="your_opik_api_key"
+OPENAI_API_KEY="your_openai_api_key"
+VAPI_API_KEY="your_vapi_api_key"
+ELASTICSEARCH_CLOUD_ID="your_elasticsearch_cloud_id"
+ELASTICSEARCH_API_KEY="your_elasticsearch_api_key"
+ELASTICSEARCH_URL="your_elasticsearch_url"
 ```
 
-Next, navigate to your project directory and install the dependencies:
+### 4. Knowledge Base
 
-(Optional) Lock the dependencies and install them by using the CLI command:
-```bash
-crewai install
-```
+Place all your knowledge base documents (e.g., `Car_Insurance_Policy_Documents.pdf`) inside the `insure_agent/src/Knowledge` directory. The application is configured to load documents from this location.
 
-### Customizing
+## Running the Application
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
-
-- Modify `src/insure_agent/config/agents.yaml` to define your agents
-- Modify `src/insure_agent/config/tasks.yaml` to define your tasks
-- Modify `src/insure_agent/crew.py` to add your own logic, tools and specific args
-- Modify `src/insure_agent/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
-
-To kickstart your flow and begin execution, run this from the root folder of your project:
+To start the FastAPI server, navigate to the `src` directory and run the following command:
 
 ```bash
-crewai run
+cd src
+uvicorn insure_agent.main:app --reload --port 80
 ```
 
-This command initializes the insure_agent Flow as defined in your configuration.
+The API will be available at `http://127.0.0.1:80`.
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+## API Endpoints
 
-## Understanding Your Crew
+The API provides two POST endpoints for interacting with the crews.
 
-The insure_agent Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+### 1. Onboarding Quote Request
 
-## Support
+- **URL**: `/onboarding/quote`
+- **Method**: `POST`
+- **Description**: Initiates the Onboarding Crew to process a new insurance quote request.
+- **Request Body**:
+  ```json
+  {
+      "client_name": "Emmanuel Eze",
+      "initial_request_type": "New Car Insurance Quote",
+      "client_query": "I need a new car insurance policy for my 2024 Toyota Camry. I'm looking for full coverage and I have a clean driving record."
+  }
+  ```
 
-For support, questions, or feedback regarding the {{crew_name}} Crew or crewAI.
+### 2. RAG Policy Query
 
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+- **URL**: `/rag/query`
+- **Method**: `POST`
+- **Description**: Initiates the RAG Crew to answer a specific question about an insurance policy.
+- **Request Body**:
+  ```json
+  {
+      "client_query": "What are the benefits of comprehensive coverage?"
+  }
+  ```
 
-Let's create wonders together with the power and simplicity of crewAI.
+### Testing with Postman
+
+You can use a tool like [Postman](https://www.postman.com/) to test the endpoints. 
+1. Set the method to `POST`.
+2. Enter the full request URL (e.g., `http://127.0.0.1:80/onboarding/quote`).
+3. Go to the `Body` tab, select `raw`, and choose `JSON`.
+4. Paste the appropriate JSON request body and send the request.
+
+
+## Docker
+
+To build the Docker image, run the following command:
+
+```bash
+docker build -t insurance-ai-agent .
+```
+
+To run the Docker container, run the following command:
+
+```bash
+docker run -d -p 8080:80 insurance-ai-agent 
+```
+
+The API will be available at `http://127.0.0.1:8080`.
+

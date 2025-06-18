@@ -12,16 +12,47 @@ load_dotenv()
 # Set your Mem0 API key
 os.environ["MEM0_API_KEY"] = os.getenv("MEM0_API_KEY")
 
-# Tool for semantic search within the 'knowledge' directory.
-policy_search_tool = DirectorySearchTool(directory='c:\\Users\\user\\Desktop\\AI\\Insurance AI agent\\insure_agent\\knowledge')
 
-# Defines a source for specific PDF files.
-pdf_source = PDFKnowledgeSource(
-    file_paths=["Car Insurance Policy Documents.pdf", "Insurance plan database.pdf",
-     "Premium Calculation Rules.pdf", "Discount Program Information.pdf", 
-     "Regulatory Compliance Information.pdf", "Claims Process Documentation.pdf", "Customer FAQ Documents.pdf"
-     ]
+# Calculate the absolute path to the Knowledge directory.
+# This navigates up from this script's location to the project root 
+# and then into the "Knowledge" folder.
+knowledge_base_path = "knowledge"
+
+
+tool = DirectorySearchTool(
+    directory=knowledge_base_path,
+    config=dict(
+        llm=dict(
+            provider="openai", 
+            config=dict(
+                model="gpt-4o-mini",
+                temperature=0.0,  # Zero temperature for search
+            ),
+        ),
+        embedder=dict(
+            provider="openai",  
+            config=dict(
+                model="text-embedding-ada-002",  # More efficient embedding
+            ),
+        ),
+        
+        # Chunker configuration
+        chunker=dict(
+            chunk_size=1000,
+            chunk_overlap=200,
+            length_function="len",
+        )
+    )
 )
+
+
+pdf_source = PDFKnowledgeSource(
+    file_paths=["Car_Insurance_Policy_Documents.pdf", "Insurance_Plan_Database.pdf",
+        "Premium_Calculation_Rules.pdf", "Discount_Program_Information.pdf",
+        "Regulatory_Compliance_Information.pdf", "Claims_Process_Documentation.pdf", 
+        "Customer_FAQ_Documents.pdf"]
+)
+
  
 @CrewBase
 class RagCrew:
@@ -36,12 +67,13 @@ class RagCrew:
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
     
+
     # Define the LLM to be used by all agents
     llm_1 = LLM(
-    model="openrouter/deepseek/deepseek-r1-0528",
+    model="openrouter/google/gemini-2.5-flash-preview-05-20",
     base_url="https://openrouter.ai/api/v1",
-    max_tokens=10000,
-    temperature=0.2,
+    max_tokens=2000,
+    temperature=0.1,
     stream=True,
     seed=42,
     api_key=os.getenv("OPENROUTER_API_KEY")
@@ -53,20 +85,14 @@ class RagCrew:
         """Creates the car insurance policy specialist agent"""       
         return Agent(
             config=self.agents_config["CarInsuranceSpecialist"],
-            tools=[policy_search_tool],
-            llm=self.llm_1,
+            tools=[tool],
+            llm=self.llm_1, 
             verbose=True,
-            max_rpm=19,
+            max_rpm=26,
             max_iter=3,
+            
         )
     
-    @task
-    def collect_user_query(self) -> Task:
-        """Task for collecting user query"""
-        return Task(
-            config=self.tasks_config["collect_user_query"],
-        )
-
     @task
     def analyze_policy_coverage(self) -> Task:
         """Task for analyzing specific aspects of policy coverage"""
@@ -97,6 +123,7 @@ class RagCrew:
             process=Process.sequential,
             verbose=True,
             knowledge_sources=[pdf_source],
+            cache=True,
             memory=True,
             memory_config={
                 "provider": "mem0",
@@ -107,6 +134,6 @@ class RagCrew:
                 },
                 "user_memory": {}
             },
-        )
+         ) 
 
     

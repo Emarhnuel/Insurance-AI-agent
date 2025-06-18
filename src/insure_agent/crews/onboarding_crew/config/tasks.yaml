@@ -1,28 +1,33 @@
-# Task 1: Conduct comprehensive client profiling interview
+# Task 1: Conduct comprehensive client profiling
 GatherClientInformation:
   description: >
-    Engage in an interactive, conversational interview with the client, {client_name}, about their request for a(n) {initial_request_type}.
-    Your primary objective is to ask questions to gather all necessary information to populate a comprehensive client profile (as defined by the ClientProfile structure).
+    Process the initial client information: client name '{client_name}', request type '{initial_request_type}', and client query '{client_query}'.
+    Your primary objective is to populate a comprehensive client profile (as defined by the ClientProfile Pydantic model) using ONLY the information available in these initial inputs.
 
-    IMPORTANT: You MUST ask the user for each piece of information required for the client profile.
-    Do NOT invent, assume, or pre-fill any data. Your role is to ask questions and record the user's answers.
-    
-    Guide the user through the following general areas, asking specific questions for each:
-    1. Client & Vehicle Basics - (e.g., Your name, contact, vehicle make, model, year, VIN)
-    2. Driver Details & History - (e.g., Who will be driving, license details, any accidents or violations for all drivers)
-    3. Vehicle Use & Special Considerations - (e.g., How the vehicle is used daily, for business, any special equipment or needs like towing)
-    4. Current Insurance & Key Risk Factors - (e.g., Details of your current policy if any, any specific risk factors like new drivers or location)
-    5. Coverage Needs, Priorities & Budget - (e.g., What coverages are most important, any budget constraints, specific preferences or concerns)
- 
-    Explain why information is needed as you go. If the user's response is unclear or incomplete for a required field, ask clarifying questions.
-    The final output will be a JSON structure based on the user's direct input.
+    **Key Steps:**
+    1.  Use the provided '{client_name}' directly for the client's name in the profile.
+    2.  Thoroughly analyze the '{client_query}' to extract all relevant details. This includes, but is not limited to:
+        - Vehicle information (e.g., make, model, year like '2023 Toyota Camry').
+        - Stated coverage needs (e.g., 'full coverage').
+        - Mentions of driving record (e.g., 'clean driving record').
+        - Any other details that map to the ClientProfile structure.
+    3.  Populate the ClientProfile JSON structure based *solely* on the information extracted from '{client_name}' and '{client_query}'.
+
+    **IMPORTANT CONSTRAINTS for this non-interactive step:**
+    -   You CANNOT ask for additional information or clarification from the user.
+    -   Do NOT invent or assume any data that is not explicitly present or reasonably directly inferable from the provided '{client_name}' and '{client_query}'.
+    -   If some fields in the ClientProfile cannot be filled from the initial inputs, leave them blank or as per the Pydantic model's defaults.
+    -   Your role here is to parse and structure the initial data, not to conduct an interview.
+
+    The final output will be a JSON structure based *only* on the provided initial inputs.
   expected_output: >
-    A structured JSON client profile, conforming to the ClientProfile Pydantic model,
-    containing only information directly provided by the user {client_name} during the interactive interview.
-    All fields in the profile must be populated based on the user's explicit answers.
-    No data should be assumed or auto-generated.
+    A structured JSON client profile, conforming to the ClientProfile Pydantic model.
+    This profile must be populated *exclusively* with information derived from the initial inputs:
+    '{client_name}', '{initial_request_type}', and '{client_query}'.
+    No interactive data gathering should occur in this step. If information is not present in the initial inputs,
+    the corresponding profile fields should remain empty or use their default values.
   agent: needs_assessment_agent
-  human_input: true
+
 
 
 # Task 2: Perform actuarial risk assessment and coverage needs analysis
@@ -176,7 +181,7 @@ IdentifySuitablePlans:
     for this particular client's situation.
   agent: coverage_analyst_agent
   context: 
-    - analyze_insurance_needs 
+    - analyze_insurance_needs
 
 # Task 4: Create personalized coverage recommendation and education package
 GenerateRecommendation:
@@ -259,5 +264,4 @@ GenerateRecommendation:
     - identify_suitable_plans
     - analyze_insurance_needs
   markdown: true
-  output_file: Output/recommendation.md 
-
+  output_file: Output/recommendation.md

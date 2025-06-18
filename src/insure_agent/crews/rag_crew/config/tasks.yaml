@@ -1,81 +1,86 @@
-# Task 0: Collect User Query
-collect_user_query:
-  description: >
-    Collect the user's specific insurance policy question or concern.
-    This input will guide the subsequent analysis tasks.
-  expected_output: >
-    The user's specific question or concern about their car insurance policy,
-    which will be used as context for the analysis tasks.
-  agent: car_insurance_specialist
-  human_input: true
-
-
 # Task 1: Analyze Policy Coverage
 analyze_policy_coverage:
   description: >
-    The user's query is: "{collect_user_query}".
-    Analyze the client's car insurance policy to answer this specific question about coverage.
-    Carefully review the policy documents to identify all relevant clauses, limitations,
-    and conditions that apply to the user's query. Consider the type of coverage
-    (liability, collision, comprehensive, etc.) and any applicable deductibles or limits.
+    The user's query is: "{{collect_user_query}}".
+    You have been provided with the following context table about insurance coverages:
+    CRITICAL INSTRUCTIONS:
+    - ONLY use information found in the provided context table or policy documents accessible via your tools.
+    - If information is not explicitly stated in the documents or the provided context, clearly state: "This information is not specified in your policy documents or the provided context."
+    - Do NOT make assumptions or infer information not directly stated.
+    - Quote directly from policy documents or the context table when possible.
+    - Always cite specific sections or page numbers when referencing policy content if available.
+
+    Analyze the client's car insurance policy and the provided context table to answer the user's specific question about coverage.
+    Carefully review the policy documents (if accessed via tools) and the context table to identify all relevant clauses, limitations,
+    and conditions that apply to the user's query.
   expected_output: >
     A structured response in markdown format with the following sections:
-    
+
     ## Coverage Analysis
-    - [Clear yes/no/maybe answer to the coverage question]
-    - [Explanation of why this coverage applies or doesn't apply]
-    
-    ## Relevant Policy Sections
-    - [Direct quotes or paraphrases from the policy]
-    - [Section numbers or references]
-    
-    ## Important Considerations
-    - [Any limitations, exceptions, or special conditions]
-    - [Potential impacts on premiums or coverage]
-    
-    If the information is not found in the policy, explicitly state: 
-    "This information is not specified in your policy documents. Please contact your insurance 
-    provider for clarification."
+    - [Clear yes/no/partial answer based ONLY on policy documents and provided context]
+    - [Explanation citing specific policy sections or details from the context table]
+
+    ## Direct Policy/Context References
+    - [Exact quotes from policy or context table with section/page numbers if applicable]
+    - [Policy document names and sections referenced, or indicate if using provided context table]
+
+    ## Limitations and Exclusions
+    - [Any limitations or exclusions found in the policy or context table]
+    - [Conditions that must be met for coverage]
+
+    ## Information Not Available
+    - [Clearly state any information not found in policy documents or the context table]
+    - [Recommend contacting the insurance provider for missing information, e.g., "This specific information is not detailed in your current policy documents or the provided context. Please contact your insurance provider for clarification."]
+
+    IMPORTANT: If any information is not explicitly found, state: "This specific information is not detailed in your current policy documents or the provided context. Please contact your insurance provider for clarification."
   agent: car_insurance_specialist
-  context: [collect_user_query]
+  
 
 
 # Task 2: Compare Coverage Options
 compare_coverage_options:
   description: >
     Using the previous 'AnalyzePolicyCoverage' output (available in context),
-    compare different coverage options or scenarios based on the policy documents.
+    compare different coverage options or scenarios based on the policy documents and the provided context table.
     For example, if the analysis mentioned specific coverage details, use that to
     compare the implications of choosing different deductible amounts or
-    adding/removing specific coverages.
+    adding/removing specific coverages as detailed in the context table or policy documents.
+    CRITICAL INSTRUCTIONS:
+    - Base your comparison ONLY on information from the provided context table or policy documents.
+    - If specific details for comparison are missing, state that clearly.
   expected_output: >
-    A comparison table showing different coverage options, including:
+    A comparison table in markdown format showing different coverage options, including:
     - Coverage type/option
-    - What's included
-    - What's excluded
-    - Impact on premium
-    - Recommended scenarios for choosing this option
+    - What's included (from context/documents)
+    - What's excluded (from context/documents)
+    - Impact on premium (from context/documents) 
+    - Recommended scenarios for choosing this option (from context/documents)
+    If information for any of these points is not in the provided materials, indicate "Not specified in provided materials."
   agent: car_insurance_specialist
   context: [analyze_policy_coverage]
-
 
 
 # Task 3: Explain Claims Process
 explain_claims_process:
   description: >
-    Drawing upon the previous analysis and comparison of coverage options (available in context),
-    explain the step-by-step process for filing a car insurance claim based on the policy documents.
-    Include any required documentation, time limits, and important contacts.
+    Provide a concise, document-based answer to the user's question: "{{collect_user_query}}".
+    Use policy documents or the provided context table as your ONLY sources.
+    If the answer is not explicitly found, state: "This information is not specified in your policy documents or the provided context."
+    Keep the entire response under 1000 words.
+    CRITICAL INSTRUCTIONS:
+    - ONLY use information explicitly found in the provided sources.
+    - Do NOT make assumptions or add external knowledge.
+    - Cite policy sections/page numbers or mark as [context table] when referencing.
   expected_output: >
-    A numbered list of steps to file a claim, including:
-    1. Immediate actions after an incident
-    2. Required documentation
-    3. How to submit the claim
-    4. Expected timeline
-    5. Contact information for claims department
+    A CONCISE response (maximum 1000 words) with:
+
+    # [Generated Heading Relevant to the Query]
+    [A detailed, not too short answer directly addressing the user's query: "{{collect_user_query}}". 
+    Ensure the answer is comprehensive and well-explained, drawing directly from the source documents.]
+
+    ## Source
+    - [Policy document name and section/page OR 'Provided context table']
   agent: car_insurance_specialist
   context: [compare_coverage_options]
   markdown: True
-  output_file: "Output/RAG-report.md"
-
-
+  output_file: "Output/RAG-report.md" # Ensure only one task writes to the final report

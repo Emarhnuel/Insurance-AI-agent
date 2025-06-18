@@ -11,11 +11,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 # Set your Mem0 API key
 os.environ["MEM0_API_KEY"] = os.getenv("MEM0_API_KEY")
-
-# Tool for semantic search within the 'knowledge' directory.
-policy_search_tool = DirectorySearchTool(directory='c:\\Users\\user\\Desktop\\AI\\Insurance AI agent\\insure_agent\\knowledge')
 
 # Instantiate the PremiumCalculatorTool
 premium_calculator_tool = PremiumCalculatorTool()
@@ -23,12 +21,44 @@ premium_calculator_tool = PremiumCalculatorTool()
 # Instantiate the InsurancePlanDatabaseTool
 insurance_plan_database_tool = InsurancePlanDatabaseTool()
 
-# Defines a source for specific PDF files.
+
+# Calculate the absolute path to the Knowledge directory.
+# This navigates up from this script's location to the project root 
+# and then into the "Knowledge" folder.
+knowledge_base_path = "knowledge"
+
+
+tool = DirectorySearchTool(
+    directory=knowledge_base_path,
+    config=dict(
+        llm=dict(
+            provider="openai", 
+            config=dict(
+                model="gpt-4o-mini",
+                temperature=0.0,  # Zero temperature for search
+            ),
+        ),
+        embedder=dict(
+            provider="openai",  
+            config=dict(
+                model="text-embedding-ada-002",  # More efficient embedding
+            ),
+        ),
+
+        # Chunker configuration
+        chunker=dict(
+            chunk_size=1000,
+            chunk_overlap=200,
+            length_function="len",
+        )
+    )
+)
+
 pdf_source = PDFKnowledgeSource(
-    file_paths=["Car Insurance Policy Documents.pdf", "Insurance plan database.pdf",
-     "Premium Calculation Rules.pdf", "Discount Program Information.pdf", 
-     "Regulatory Compliance Information.pdf", "Claims Process Documentation.pdf", "Customer FAQ Documents.pdf"
-     ]  
+    file_paths=["Car_Insurance_Policy_Documents.pdf", "Insurance_Plan_Database.pdf",
+        "Premium_Calculation_Rules.pdf", "Discount_Program_Information.pdf",
+        "Regulatory_Compliance_Information.pdf", "Claims_Process_Documentation.pdf", 
+        "Customer_FAQ_Documents.pdf"]
 )
 
 
@@ -46,9 +76,9 @@ class OnboardingCrew:
     
     # Define shared LLM for all agents
     llm_1 = LLM(
-    model="openrouter/deepseek/deepseek-r1-0528",
+    model="openrouter/google/gemini-2.5-flash-preview-05-20",
     base_url="https://openrouter.ai/api/v1",
-    max_tokens=10000,
+    max_tokens=4000,
     temperature=0.2,
     stream=True,
     seed=42,
@@ -58,7 +88,7 @@ class OnboardingCrew:
     llm_2 = LLM(
     model="openrouter/deepseek/deepseek-r1-0528",
     base_url="https://openrouter.ai/api/v1",
-    max_tokens=10000,
+    max_tokens=4000,
     temperature=0.2,
     stream=True,
     seed=42,
@@ -70,7 +100,7 @@ class OnboardingCrew:
         """Creates the client information gathering specialist"""
         return Agent(
             config=self.agents_config["NeedsAssessmentAgent"],
-            llm=self.llm_1,
+            llm=self.llm_2,
             max_rpm=40,
             max_iter=3,
             verbose=True
@@ -83,8 +113,8 @@ class OnboardingCrew:
         
         return Agent(
             config=self.agents_config["CoverageAnalystAgent"],
-            tools=[policy_search_tool, premium_calculator_tool, insurance_plan_database_tool], # Added insurance_plan_database_tool
-            llm=self.llm_2,
+            tools=[tool, premium_calculator_tool, insurance_plan_database_tool],
+            llm=self.llm_1,
             max_rpm=40,
             max_iter=3,
             verbose=True
@@ -112,7 +142,7 @@ class OnboardingCrew:
     def analyze_insurance_needs(self) -> Task:
         """Performs actuarial risk assessment and coverage needs analysis"""
         return Task(
-            config=self.tasks_config["AnalyzeInsuranceNeeds"]
+            config=self.tasks_config["AnalyzeInsuranceNeeds"],
         )
 
     @task
@@ -138,14 +168,15 @@ class OnboardingCrew:
             process=Process.sequential,
             verbose=True,
             knowledge_sources=[pdf_source],
+            cache=True,
             memory=True,
             memory_config={
-                "provider": "mem0",
-                "config": {
-                    "user_id": "Emmanuel_Onboarding",
-                    "org_id": "org_qGKjjvHSnVe2ZKBbbtwN7vlYwlGwr7g1sbiiXfN4",        # Optional
-                    "project_id": "proj_M1TSScoCtHZlxlUjqG9VwkYEpWMPoiXrfjJX8OsG", # Optional
-                },
-                "user_memory": {}
-            },
+                 "provider": "mem0",
+                 "config": {
+                     "user_id": "Emmanuel_Onboarding",
+                     "org_id": "org_qGKjjvHSnVe2ZKBbbtwN7vlYwlGwr7g1sbiiXfN4",        # Optional
+                     "project_id": "proj_M1TSScoCtHZlxlUjqG9VwkYEpWMPoiXrfjJX8OsG", # Optional
+                 },
+                 "user_memory": {}
+             },
         )
