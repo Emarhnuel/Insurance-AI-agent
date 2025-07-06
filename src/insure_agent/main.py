@@ -12,12 +12,6 @@ from insure_agent.crews.onboarding_crew.onboarding_crew import OnboardingCrew
 from insure_agent.crews.rag_crew.rag_crew import RagCrew
 import uvicorn
 
-import opik
-from opik.integrations.crewai import track_crewai
-
-
-opik.configure(use_local=False) # Configure as per your Opik setup
-track_crewai(project_name="Insurance AI agent")
 
 
 app = FastAPI(
