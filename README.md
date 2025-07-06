@@ -139,7 +139,8 @@ Your AI command center awaits at `http://127.0.0.1:80`!
 3. Navigate to the `Body` lab station, select `raw`, and choose `JSON`
 4. Insert your test sample (JSON from above) and observe the reaction!
 
-## 🐳 Docker - Put It In A Container!
+
+### 🐳 Docker - Put It In A Container!
 
 Package this whole experiment in a nice Docker container:
 
@@ -150,12 +151,24 @@ docker build -t insurance-ai-agent .
 Release it into the wild:
 
 ```bash
-docker run -d -p 8080:800 insurance-ai-agent
+docker run -d -p 8080:800 insurance-ai-agent 
 ```
 
 Visit your containerized creation at `http://127.0.0.1:8080`!
 
 ---
+
+
+### 🚀 Kubernetes - Launch Into The Cloud!
+
+```bash
+# Deploy your magical secrets to the Kubernetes cosmos
+kubectl create secret generic openai-secret --from-literal=OPENAI_API_KEY=your_openai_api_key
+kubectl create secret generic mem0-secret --from-literal=MEM0_API_KEY=your_mem0_api_key
+kubectl create secret generic openrouter-secret --from-literal=OPENROUTER_API_KEY=your_openrouter_api_key
+
+Your insurance AI is now floating in the cloud, ready to serve clients across the galaxy! 🌌
+
 
 ## 🎯 Happy Insuring!
 
