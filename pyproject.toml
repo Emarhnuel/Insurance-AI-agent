@@ -7,7 +7,6 @@ requires-python = ">=3.10,<3.13"
 dependencies = [
     "crewai-tools[mcp]>=0.45.0",
     "crewai[tools]>=0.121.1,<1.0.0",
-    "embedchain[elasticsearch]>=0.1.128",
     "mem0ai>=0.1.102",
     "opik>=1.7.27",
     "pip>=25.1.1",
