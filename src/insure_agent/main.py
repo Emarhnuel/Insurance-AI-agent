@@ -13,6 +13,10 @@ from insure_agent.crews.rag_crew.rag_crew import RagCrew
 import uvicorn
 
 
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+MEM0_API_KEY = os.getenv("MEM0_API_KEY")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+
 
 app = FastAPI(
     title="Insurance AI Agent API",
