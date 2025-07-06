@@ -83,7 +83,7 @@ async def handle_rag_request(request: RagQueryRequest):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=80)
+    uvicorn.run(app, host="0.0.0.0", port=800) # Run the app on port 800
     
     
 # To run this FastAPI application:
