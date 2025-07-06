@@ -166,6 +166,7 @@ Visit your containerized creation at `http://127.0.0.1:8080`!
 kubectl create secret generic openai-secret --from-literal=OPENAI_API_KEY=your_openai_api_key
 kubectl create secret generic mem0-secret --from-literal=MEM0_API_KEY=your_mem0_api_key
 kubectl create secret generic openrouter-secret --from-literal=OPENROUTER_API_KEY=your_openrouter_api_key
+``` 
 
 Your insurance AI is now floating in the cloud, ready to serve clients across the galaxy! 🌌
 
