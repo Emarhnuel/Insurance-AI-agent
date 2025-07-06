@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-agent-deployment
+  labels:
+    app: insurance-agent-pod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insurance-agent-pod
+  template:
+    metadata:
+      labels:
+        app: insurance-agent-pod
+    spec:
+      containers:
+      - name: insurance-agent
+        image: emarhnuel/insurance-ai-agent:latest 
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 800
+        startupProbe:
+          httpGet:
+            path: /docs
+            port: 800
+          failureThreshold: 60
+          periodSeconds: 10
+          initialDelaySeconds: 0
+        livenessProbe:
+          httpGet:
+            path: /docs
+            port: 800
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /docs
+            port: 800
+          initialDelaySeconds: 120
+          periodSeconds: 15
+        resources:             # <--- FIXES THE WARNING
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        envFrom:  
+        - secretRef:
+            name: openai-secret
+        - secretRef:
+            name: mem0-secret
+        - secretRef:
+            name: openrouter-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: insurance-agent-service
+spec:
+  selector:
+    app: insurance-agent-pod
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 800
+      nodePort: 30998
+  # Use LoadBalancer to expose the service outside of the cluster.
+  # On cloud providers, this will provision a public IP address.
+  # For local development (like Minikube or Docker Desktop), 
+  # you might use 'NodePort' or 'kubectl port-forward'.
+  type: NodePort
