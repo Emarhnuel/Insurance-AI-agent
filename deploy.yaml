@@ -18,24 +18,24 @@ spec:
       - name: insurance-agent
         image: emarhnuel/insurance-ai-agent:v2 
         ports:
-        - containerPort: 800
+        - containerPort: 8000
         startupProbe:
           httpGet:
             path: /docs
-            port: 800
+            port: 8000
           failureThreshold: 60
           periodSeconds: 10
           initialDelaySeconds: 0
         livenessProbe:
           httpGet:
             path: /docs
-            port: 800
+            port: 8000
           initialDelaySeconds: 15
           periodSeconds: 20
         readinessProbe:
           httpGet:
             path: /docs
-            port: 800
+            port: 8000
           initialDelaySeconds: 120
           periodSeconds: 15
         resources:             # <--- FIXES THE WARNING
@@ -45,13 +45,22 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-        envFrom:  
-        - secretRef:
-            name: openai-secret
-        - secretRef:
-            name: mem0-secret
-        - secretRef:
-            name: openrouter-secret
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openai-secret
+              key: API_KEY
+        - name: OPENROUTER_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: openrouter-secret
+              key: API_KEY
+        - name: MEM0_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mem0-secret
+              key: API_KEY
 ---
 apiVersion: v1
 kind: Service
@@ -63,6 +72,6 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 800
+      targetPort: 8000
       nodePort: 30998
   type: LoadBalancer
