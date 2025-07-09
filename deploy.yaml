@@ -16,8 +16,7 @@ spec:
     spec:
       containers:
       - name: insurance-agent
-        image: emarhnuel/insurance-ai-agent:latest 
-        imagePullPolicy: Never
+        image: emarhnuel/insurance-ai-agent:v2 
         ports:
         - containerPort: 800
         startupProbe:
@@ -66,8 +65,4 @@ spec:
       port: 80
       targetPort: 800
       nodePort: 30998
-  # Use LoadBalancer to expose the service outside of the cluster.
-  # On cloud providers, this will provision a public IP address.
-  # For local development (like Minikube or Docker Desktop), 
-  # you might use 'NodePort' or 'kubectl port-forward'.
-  type: NodePort
+  type: LoadBalancer
