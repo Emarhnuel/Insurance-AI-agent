@@ -3,3 +3,8 @@ kind: Kustomization
   
 resources:
   - deploy.yaml
+
+images:
+  - name: emarhnuel/insurance-ai-agent:v2
+    newName: gcr.io/PROJECT_ID/insurance-ai-agent
+    newTag: GITHUB_SHA
