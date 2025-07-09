@@ -52,7 +52,6 @@ jobs:
         kubectl create secret generic api-keys \
           --from-literal=OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }} \
           --from-literal=MEM0_API_KEY=${{ secrets.MEM0_API_KEY }} \
-          --from-literal=VAPI_API_KEY=${{ secrets.VAPI_API_KEY }} \
           --from-literal=OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
           --dry-run=client -o yaml | kubectl apply -f -
 
