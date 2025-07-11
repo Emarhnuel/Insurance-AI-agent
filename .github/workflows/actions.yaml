@@ -77,3 +77,12 @@ jobs:
         # Wait for the deployment to succeed.
         kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=5m
         kubectl get services -o wide
+
+    - name: Debug on Failure
+      if: failure()
+      run: |-
+        echo "Deployment failed. Collecting debug information..."
+        kubectl describe deployment $DEPLOYMENT_NAME
+        kubectl describe pods -l app=insurance-agent
+        echo "--- Pod Logs ---"
+        kubectl logs -l app=insurance-agent --all-containers=true --tail=100
