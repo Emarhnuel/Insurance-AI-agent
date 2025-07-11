@@ -83,6 +83,6 @@ jobs:
       run: |-
         echo "Deployment failed. Collecting debug information..."
         kubectl describe deployment $DEPLOYMENT_NAME
-        kubectl describe pods -l app=insurance-agent
+        kubectl describe pods -l app=insurance-agent-pod
         echo "--- Pod Logs ---"
-        kubectl logs -l app=insurance-agent --all-containers=true --tail=100
+        kubectl logs -l app=insurance-agent-pod --all-containers=true --tail=100
