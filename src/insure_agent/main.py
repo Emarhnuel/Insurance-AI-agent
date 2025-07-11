@@ -76,7 +76,7 @@ async def handle_rag_request(request: RagQueryRequest):
     except Exception as e:
         # Log the exception for debugging
         print(f"Error during RAG Crew execution: {e}")
-        raise HTTPException(status_code=500, detail=f"An error occurred while processing the RAG query: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"An error occurred while processing the RAG queries: {str(e)}")
 
 
 
