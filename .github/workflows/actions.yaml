@@ -31,7 +31,7 @@ jobs:
         uses: 'google-github-actions/auth@v2'
         with:
           # This uses the GCP_SA_KEY secret you created in GitHub secrets.
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          credentials_json: '${{ secrets.GKE_SA_KEY }}'
 
       # --- Configure Docker for GCR --- #
       # This step configures Docker to use gcloud for authentication, so no
