@@ -55,12 +55,6 @@ jobs:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_ZONE }}
 
-      - name: Set Kustomize Image Tag
-        run: |
-          cd k8s/base
-          kustomize edit set image gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}=gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          echo "Kustomize image tag set to: ${{ github.sha }}"
-
       - name: Deploy to GKE
         run: |
           echo "Applying Kustomize manifests..."
