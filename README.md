@@ -48,7 +48,7 @@ Our system features two AI crews working tirelessly for you:
 
 6.  **🛠️ Gather Your Magical Tools:**
     ```bash
-    uv pip install fastapi uvicorn python-dotenv "elasticsearch[async]" pydantic sse-starlette
+    uv pip install fastapi uvicorn python-dotenv pydantic sse-starlette
     # Feel free to add more magical ingredients as needed!
     ```
 
@@ -82,12 +82,7 @@ Create a `.env` file in your project's root directory and fill it with these mag
 ```env
 OPENROUTER_API_KEY="your_super_secret_openrouter_key"
 MEM0_API_KEY="your_incredible_mem0_key" 
-OPIK_API_KEY="your_amazing_opik_key"
 OPENAI_API_KEY="your_fantastic_openai_key"
-VAPI_API_KEY="your_magnificent_vapi_key"
-ELASTICSEARCH_CLOUD_ID="your_stellar_elasticsearch_cloud_id"
-ELASTICSEARCH_API_KEY="your_phenomenal_elasticsearch_key"
-ELASTICSEARCH_URL="your_spectacular_elasticsearch_url"
 ```
 
 ### 📚 Feed The Knowledge Beast
