@@ -61,6 +61,7 @@ spec:
             secretKeyRef:
               name: mem0-secret
               key: API_KEY
+
 ---
 apiVersion: v1
 kind: Service
