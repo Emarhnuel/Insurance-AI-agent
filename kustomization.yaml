@@ -6,5 +6,5 @@ resources:
 
 images:
   - name: emarhnuel/insurance-ai-agent:v2
-    newName: gcr.io/PROJECT_ID/insurance-ai-agent
+    newName: gcr.io/white-airship-465214-d2/insurance-ai-agent
     newTag: GITHUB_SHA
