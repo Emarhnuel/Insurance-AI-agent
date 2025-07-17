@@ -16,4 +16,4 @@ RUN uv sync --locked
 EXPOSE 8000
 
 # Run the application
-CMD ["/app/.venv/bin/uvicorn", "src.insure_agent.main:app", "--port", "8000", "--host", "0.0.0.0"]
+CMD ["/app/.venv/bin/uvicorn", "insure_agent.main:app", "--port", "8000", "--host", "0.0.0.0", "--app-dir", "/app/src"]
