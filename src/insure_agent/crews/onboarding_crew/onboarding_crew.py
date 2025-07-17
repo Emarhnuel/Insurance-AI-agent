@@ -116,7 +116,7 @@ class OnboardingCrew:
         
         return Agent(
             config=self.agents_config["CoverageAnalystAgent"],
-            tools=[get_directory_search_tool(), premium_calculator_tool, insurance_plan_database_tool],
+            tools=[tool, premium_calculator_tool, insurance_plan_database_tool],
             llm=self.llm_1,
             max_rpm=40,
             max_iter=3,
