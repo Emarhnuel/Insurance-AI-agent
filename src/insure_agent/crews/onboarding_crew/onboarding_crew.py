@@ -28,6 +28,7 @@ insurance_plan_database_tool = InsurancePlanDatabaseTool()
 knowledge_base_path = "knowledge"
 
 
+
 tool = DirectorySearchTool(
     directory=knowledge_base_path,
     config=dict(
@@ -36,15 +37,17 @@ tool = DirectorySearchTool(
             config=dict(
                 model="gpt-4o-mini",
                 temperature=0.0,  # Zero temperature for search
+                api_key=os.getenv("OPENAI_API_KEY")
             ),
         ),
         embedder=dict(
             provider="openai",  
             config=dict(
                 model="text-embedding-ada-002",  # More efficient embedding
+                api_key=os.getenv("OPENAI_API_KEY")
             ),
         ),
-
+        
         # Chunker configuration
         chunker=dict(
             chunk_size=1000,
@@ -113,7 +116,7 @@ class OnboardingCrew:
         
         return Agent(
             config=self.agents_config["CoverageAnalystAgent"],
-            tools=[tool, premium_calculator_tool, insurance_plan_database_tool],
+            tools=[get_directory_search_tool(), premium_calculator_tool, insurance_plan_database_tool],
             llm=self.llm_1,
             max_rpm=40,
             max_iter=3,
