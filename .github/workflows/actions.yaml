@@ -44,13 +44,12 @@ jobs:
 
     # Build the Docker image
     - name: Build
-      working-directory: ./insure_agent
       run: |-
         docker build \
           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          .
+          ./insure_agent
 
     # Push the Docker image to Google Container Registry
     - name: Publish
