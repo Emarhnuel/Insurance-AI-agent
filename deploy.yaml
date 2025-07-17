@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: insurance-agent
-        image: emarhnuel/insurance-ai-agent:v2 
+        image: emarhnuel/insurance-ai-agent:v3 
         ports:
         - containerPort: 8000
         startupProbe:
@@ -50,17 +50,17 @@ spec:
           valueFrom:
             secretKeyRef:
               name: openai-secret
-              key: API_KEY
+              key: OPENAI_API_KEY
         - name: OPENROUTER_API_KEY
           valueFrom:
             secretKeyRef:
               name: openrouter-secret
-              key: API_KEY
+              key: OPENROUTER_API_KEY
         - name: MEM0_API_KEY
           valueFrom:
             secretKeyRef:
               name: mem0-secret
-              key: API_KEY
+              key: MEM0_API_KEY
 
 ---
 apiVersion: v1
