@@ -27,12 +27,14 @@ tool = DirectorySearchTool(
             config=dict(
                 model="gpt-4o-mini",
                 temperature=0.0,  # Zero temperature for search
+                api_key=os.getenv("OPENAI_API_KEY")
             ),
         ),
         embedder=dict(
             provider="openai",  
             config=dict(
                 model="text-embedding-ada-002",  # More efficient embedding
+                api_key=os.getenv("OPENAI_API_KEY")
             ),
         ),
         
