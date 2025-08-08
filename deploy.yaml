@@ -6,6 +6,11 @@ metadata:
     app: insurance-agent-pod
 spec:
   replicas: 1
+  strategy: # <-- This is the added block
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: insurance-agent-pod
@@ -38,7 +43,7 @@ spec:
             port: 8000
           initialDelaySeconds: 120
           periodSeconds: 15
-        resources:             # <--- FIXES THE WARNING
+        resources:
           requests:
             memory: "256Mi"
             cpu: "250m"
